@@ -1,204 +1,99 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "main.h"
 
-int str_len(char *str);
-char *c_array(int size);
-char *iterate_z(char *str);
-void gprod(char *prod, char *mul, int dig, int z);
-void mul_n(char *fin_prod, char *n_prod, int n_len);
-int gdig(char b);
-
 /**
- * str_len - find the length of string
- * @str: the string to be measured
+ * is_digit - checks if a string contains a non-digit char
+ * @s: string to be evaluated
  *
- * Return: the length of string
+ * Return: 0 if a non-digit is found, 1 otherwise
  */
-int str_len(char *str)
+int is_digit(char *s)
 {
-	int l = 0;
+	int i = 0;
 
-	while (*str++)
-		l++;
-
-	return (l);
+	while (s[i])
+	{
+		if (s[i] < '0' || s[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 /**
- * c_array - creates an array of chars and initialize, adds a null byte
- * @size: size of the array to initialized
- * Return: pointer to array, exits 98 if insufficient space
+ * _strlen - returns the length of a string
+ * @s: string to evaluate
+ *
+ * Return: the length of the string
  */
-char *c_array(int size)
+int _strlen(char *s)
 {
-	char *ar;
-	int ind;
+	int i = 0;
 
-	ar = malloc(sizeof(char) * size);
-
-	if (ar == NULL)
-		exit(98);
-
-	for (ind = 0; ind < (size - 1); ind++)
-		ar[ind] = 'x';
-	ar[ind] = '\0';
-
-	return (ar);
+	while (s[i] != '\0')
+	{
+		i++;
+	}
+	return (i);
 }
 
 /**
- * iterate_z - iterates through string of numbers, from 0 till a non-0
- * @str: the string of numbers
- * Return: a pointer to the next non-0 element
+ * errors - handles errors for main
  */
-char *iterate_z(char *str)
+void errors(void)
 {
-	while (*str && *str == '0')
-		str++;
-
-	return (str);
+	printf("Error\n");
+	exit(98);
 }
 
 /**
- * gdig - converts a digit char to conrresponding int
- * @b: char to be converted
- * Return: the converted int, exit 98 if b is non-digit
- */
-int gdig(char b)
-{
-	int dig = b - '0';
-
-	if (dig < 0 || dig > 9)
-	{
-		printf("Error\n");
-		exit(98);
-	}
-	return (dig);
-}
-
-/**
- * gprod - multiplies string of numbers by single digit
- * @prod: buffer to store result
- * @mul: string of numbers
- * @dig: the single digit
- * @z: necessary number of leading zeroes
- * Description: if mul has a non-digit, exit 98
- */
-void gprod(char *prod, char *mul, int dig, int z)
-{
-	int mlen, n, tn = 0;
-
-	mlen = str_len(mul) - 1;
-	mul += mlen;
-
-	while (*prod)
-	{
-		*prod = 'x';
-		prod++;
-	}
-	prod--;
-
-	while (z--)
-	{
-		*prod = '0';
-		prod--;
-	}
-	for (; mlen >= 0; mlen--, mul--, prod--)
-	{
-		if (*mul < '0' || *mul > '9')
-		{
-			printf("Error\n");
-			exit(98);
-		}
-		n = (*mul - '0') * dig;
-		n += tn;
-		*prod = (n % 10) + '0';
-		tn = n / 10;
-	}
-	if (tn)
-		*prod = (tn % 10) + '0';
-}
-
-/**
- * add_n - adds the numbers stored in 2 strings
- * @fin_prod: buffer storing the running final product
- * @n_prod: next product to be added
- * @n_len: length of next_prod
- */
-void add_n(char *fin_prod, char *n_prod, int n_len)
-{
-	int n, tn = 0;
-
-	while (*(fin_prod + 1))
-		fin_prod++;
-
-	for (; *fin_prod != 'x'; fin_prod--)
-	{
-		n = (*fin_prod - '0') + (*n_prod - '0');
-		n += tn;
-		*fin_prod = (n % 10) + '0';
-		tn = n / 10;
-
-		n_prod--;
-		n_len--;
-	}
-	for (; n_len >= 0 && *n_prod != 'x'; n_len--)
-	{
-		n = (*n_prod - '0');
-		n += tn;
-		*fin_prod = (n % 10) + '0';
-		tn = n / 10;
-
-		fin_prod--;
-		n_prod--;
-	}
-	if (tn)
-		*fin_prod = (tn % 10) + '0';
-}
-
-/**
- * main - multiplies 2 +ve nums
- * @argv: arguments passed
- * @argc: array to pointers
- * Return: 0, if arguments incorrect exit 98
+ * main - multiplies two positive numbers
+ * @argc: number of arguments
+ * @argv: array of arguments
+ *
+ * Return: always 0 (Success)
  */
 int main(int argc, char *argv[])
 {
-	char *fin_prod, *n_prod;
-	int size, ind, dig, z = 0;
+	char *s1, *s2;
+	int len1, len2, len, i, carry, digit1, digit2, *result, a = 0;
 
-	if (argc != 3)
+	s1 = argv[1], s2 = argv[2];
+	if (argc != 3 || !is_digit(s1) || !is_digit(s2))
+		errors();
+	len1 = _strlen(s1);
+	len2 = _strlen(s2);
+	len = len1 + len2 + 1;
+	result = malloc(sizeof(int) * len);
+	if (!result)
+		return (1);
+	for (i = 0; i <= len1 + len2; i++)
+		result[i] = 0;
+	for (len1 = len1 - 1; len1 >= 0; len1--)
 	{
-		printf("Error\n");
-		exit(98);
+		digit1 = s1[len1] - '0';
+		carry = 0;
+		for (len2 = _strlen(s2) - 1; len2 >= 0; len2--)
+		{
+			digit2 = s2[len2] - '0';
+			carry += result[len1 + len2 + 1] + (digit1 * digit2);
+			result[len1 + len2 + 1] = carry % 10;
+			carry /= 10;
+		}
+		if (carry > 0)
+			result[len1 + len2 + 1] += carry;
 	}
-	if (*(argv[1]) == '0')
-		argv[1] = iterate_z(argv[1]);
-	if (*(argv[2]) == '0')
-		argv[2] = iterate_z(argv[2]);
-	if (*(argv[1]) == '\0' || *(argv[2]) == '\0')
+	for (i = 0; i < len - 1; i++)
 	{
-		printf("0\n");
-		return (0);
+		if (result[i])
+			a = 1;
+		if (a)
+			_putchar(result[i] + '0');
 	}
-	size = str_len(argv[1]) + str_len(argv[2]);
-	fin_prod = c_array(size + 1);
-	n_prod = c_array(size + 1);
-
-	for (ind = str_len(argv[2]) - 1; ind >= 0; ind--)
-	{
-		dig = gdig(*(argv[2] + ind));
-		gprod(n_prod, argv[1], dig, z++);
-		add_n(fin_prod, n_prod, size - 1);
-	}
-	for (ind = 0; fin_prod[ind]; ind++)
-	{
-		if (fin_prod[ind] != 'x')
-			putchar(fin_prod[ind]);
-	}
-	putchar('\n');
-
-	free(n_prod);
-	free(fin_prod);
-
+	if (!a)
+		_putchar('0');
+	_putchar('\n');
+	free(result);
 	return (0);
 }
