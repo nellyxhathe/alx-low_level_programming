@@ -1,35 +1,30 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include "lists.h"
 
 /**
- * main - check the code
+ * print_listint - Prints all the elements of a linked list.
+ * @h: A pointer to the first node of the linked list.
  *
- * Return: Always 0.
+ * Return: The number of nodes in the linked list.
  */
-int main(void)
+size_t print_listint(const listint_t *h)
 {
-    listint_t *head;
-    listint_t *new;
-    listint_t hello = {8, NULL};
-    size_t n;
+    size_t nodenum = 0;
 
-    head = &hello;
-    new = malloc(sizeof(listint_t));
-    if (new == NULL)
+    /* Iterate through the linked list */
+    while (h)
     {
-        printf("Error
-");
-        return (1);
+        /* Print the value of the current node */
+        printf("%d
+", h->n);
+
+        /* Increment the node count */
+        nodenum++;
+
+        /* Move to the next node */
+        h = h->next;
     }
-    new->n = 9;
-    new->next = head;
-    head = new;
-    n = print_listint(head);
-    printf("-> %lu elements
-", n);
-    free(new);
-    return (0);
+
+    /* Return the number of nodes */
+    return (nodenum);
 }
 
