@@ -1,32 +1,18 @@
-#include <stdlib.h>
-#include <string.h>
+#include "main.h"
 #include <stdio.h>
-#include "lists.h"
 
 /**
  * main - check the code
- * 
- * Return: Always 0.
+ *
+ * Return: Always 0
  */
 int main(void)
 {
-    listint_t *head;
-    listint_t *new;
-    listint_t hello = {8, NULL};
-    size_t n;
+	int n;
 
-    head = &hello;
-    new = malloc(sizeof(listint_t));
-    if (new == NULL)
-    {
-        printf("Error\n");
-        return (1);
-    }
-    new->n = 9;
-    new->next = head;
-    head = new;
-    n = print_listint(head);
-    printf("-> %lu elements\n", n);
-    free(new);
-    return (0);
+	n = 402;
+	printf("n=%d\n", n);
+	reset_to_98(&n);
+	printf("n=%d\n", n);
+	return (0);
 }
